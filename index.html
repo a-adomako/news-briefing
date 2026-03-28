@@ -4,419 +4,577 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#ffffff">
-  <title>Daily Briefing · Mar 28, 2026</title>
+  <title>Daily Briefing — March 28, 2026</title>
   <style>
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #f8f9fb;
+      --surface: #ffffff;
+      --surface2: #f1f3f7;
+      --border: #e2e6ef;
+      --accent-world:  #2563eb;
+      --accent-tech:   #7c3aed;
+      --accent-biz:    #059669;
+      --accent-ghana:  #d97706;
+      --accent-health: #0891b2;
+      --text: #0f172a;
+      --muted: #64748b;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
 
-:root {
-  --bg:       #f4f4ef;
-  --surface:  #ffffff;
-  --border:   #e5e5dd;
-  --text:     #1a1a1a;
-  --muted:    #6b7280;
-  --accent:   #1d4ed8;
-  --accent-bg:#eff6ff;
-  --radius:   12px;
-  --shadow:   0 1px 3px rgba(0,0,0,.07), 0 1px 2px rgba(0,0,0,.05);
-}
+    /* HEADER */
+    .header {
+      background: #ffffff;
+      border-bottom: 1px solid var(--border);
+      padding: 40px 24px 32px;
+      text-align: center;
+    }
+    .header-eyebrow {
+      font-size: 11px; font-weight: 700;
+      letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--muted); margin-bottom: 10px;
+    }
+    .header h1 {
+      font-size: clamp(26px, 6vw, 42px);
+      font-weight: 800; letter-spacing: -1.5px;
+      color: var(--text); margin-bottom: 6px;
+    }
+    .header-sub { font-size: 14px; color: var(--muted); }
+    .date-range-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: #f0fdf4; border: 1px solid #bbf7d0; color: #15803d;
+      border-radius: 999px; padding: 4px 14px;
+      font-size: 12px; font-weight: 600; margin-top: 14px;
+    }
+    .pills {
+      display: flex; gap: 8px; justify-content: center;
+      flex-wrap: wrap; margin-top: 16px;
+    }
+    .pill {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 4px 12px; border-radius: 999px;
+      font-size: 12px; font-weight: 600; border: 1.5px solid;
+    }
+    .pill-world  { color: var(--accent-world);  border-color: #bfdbfe; background: #eff6ff; }
+    .pill-tech   { color: var(--accent-tech);   border-color: #ddd6fe; background: #f5f3ff; }
+    .pill-biz    { color: var(--accent-biz);    border-color: #a7f3d0; background: #f0fdf4; }
+    .pill-ghana  { color: var(--accent-ghana);  border-color: #fde68a; background: #fffbeb; }
+    .pill-health { color: var(--accent-health); border-color: #a5f3fc; background: #ecfeff; }
 
-body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  line-height: 1.5;
-  -webkit-font-smoothing: antialiased;
-}
+    /* LAYOUT */
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 20px 80px; }
 
-/* ── Header ── */
-.header {
-  background: var(--surface);
-  border-bottom: 1px solid var(--border);
-  padding: 16px;
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  backdrop-filter: blur(8px);
-}
-.header-inner {
-  max-width: 960px;
-  margin: 0 auto;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-.header h1 {
-  font-size: 1.15rem;
-  font-weight: 800;
-  letter-spacing: -.03em;
-}
-.header p {
-  font-size: .75rem;
-  color: var(--muted);
-  margin-top: 1px;
-}
-.date-badge {
-  background: var(--accent-bg);
-  color: var(--accent);
-  font-size: .7rem;
-  font-weight: 700;
-  padding: 4px 10px;
-  border-radius: 99px;
-  white-space: nowrap;
-  flex-shrink: 0;
-}
+    /* SECTION HEADER */
+    .section-header {
+      display: flex; align-items: center; gap: 14px;
+      padding: 48px 0 20px;
+    }
+    .section-icon {
+      width: 40px; height: 40px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px; flex-shrink: 0;
+    }
+    .section-icon-world  { background: #eff6ff; }
+    .section-icon-tech   { background: #f5f3ff; }
+    .section-icon-biz    { background: #f0fdf4; }
+    .section-icon-ghana  { background: #fffbeb; }
+    .section-icon-health { background: #ecfeff; }
+    .section-title-wrap h2 {
+      font-size: 20px; font-weight: 700; letter-spacing: -0.3px;
+    }
+    .section-line { flex: 1; height: 1px; background: var(--border); }
 
-/* ── Layout ── */
-main {
-  max-width: 960px;
-  margin: 0 auto;
-  padding: 24px 16px 64px;
-  display: flex;
-  flex-direction: column;
-  gap: 36px;
-}
+    /* CARD GRID */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 16px;
+    }
+    @media (max-width: 640px) { .cards-grid { grid-template-columns: 1fr; } }
 
-/* ── Section ── */
-.section-title {
-  font-size: .95rem;
-  font-weight: 700;
-  letter-spacing: -.01em;
-  margin-bottom: 14px;
-  padding-bottom: 10px;
-  border-bottom: 2px solid var(--border);
-}
+    /* CARD */
+    .card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 14px; overflow: hidden;
+      display: flex; flex-direction: column;
+      transition: box-shadow .15s, transform .15s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,.08); }
+    .card:active { transform: none; }
+    .card-img {
+      width: 100%; height: 190px; object-fit: cover;
+      background: var(--surface2); display: block;
+    }
+    .card-img-placeholder {
+      width: 100%; height: 140px; background: var(--surface2);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 40px;
+    }
+    .card-body {
+      padding: 16px 18px 18px; flex: 1;
+      display: flex; flex-direction: column;
+    }
+    .card-meta {
+      display: flex; align-items: center;
+      justify-content: space-between; margin-bottom: 8px;
+    }
+    .card-source {
+      font-size: 10px; font-weight: 700;
+      letter-spacing: .1em; text-transform: uppercase;
+      padding: 2px 8px; border-radius: 4px;
+    }
+    .source-world  { color: var(--accent-world);  background: #eff6ff; }
+    .source-tech   { color: var(--accent-tech);   background: #f5f3ff; }
+    .source-biz    { color: var(--accent-biz);    background: #f0fdf4; }
+    .source-ghana  { color: var(--accent-ghana);  background: #fffbeb; }
+    .source-health { color: var(--accent-health); background: #ecfeff; }
+    .card-date { font-size: 11px; color: var(--muted); }
+    .card h3 {
+      font-size: 15px; font-weight: 700; line-height: 1.4;
+      letter-spacing: -0.2px; margin-bottom: 8px;
+    }
+    .card p { font-size: 13px; color: var(--muted); line-height: 1.65; flex: 1; }
+    .card-footer {
+      margin-top: 14px; padding-top: 10px;
+      border-top: 1px solid var(--border);
+    }
+    .read-link {
+      font-size: 12px; font-weight: 600; text-decoration: none;
+      display: inline-flex; align-items: center; gap: 4px;
+    }
+    .read-link-world  { color: var(--accent-world); }
+    .read-link-tech   { color: var(--accent-tech); }
+    .read-link-biz    { color: var(--accent-biz); }
+    .read-link-ghana  { color: var(--accent-ghana); }
+    .read-link-health { color: var(--accent-health); }
+    .read-link:hover { text-decoration: underline; }
 
-/* ── Grid ── */
-.card-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 12px;
-}
-@media (min-width: 560px) {
-  .card-grid { grid-template-columns: repeat(2, 1fr); }
-}
-@media (min-width: 840px) {
-  .card-grid { grid-template-columns: repeat(3, 1fr); }
-}
+    /* LEAD CARD */
+    .lead-card {
+      grid-column: 1 / -1;
+      display: grid; grid-template-columns: 1.1fr 1fr;
+    }
+    .lead-card .card-img { height: 100%; min-height: 240px; border-radius: 0; }
+    .lead-card .card-body { padding: 24px 28px; justify-content: center; }
+    .lead-card h3 { font-size: 20px; }
+    .lead-card p  { font-size: 14px; }
+    @media (max-width: 640px) {
+      .lead-card { grid-template-columns: 1fr; }
+      .lead-card .card-img { height: 200px; }
+    }
 
-/* ── Card ── */
-.card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  overflow: hidden;
-  box-shadow: var(--shadow);
-  text-decoration: none;
-  color: inherit;
-  display: flex;
-  flex-direction: column;
-  transition: box-shadow .15s, transform .15s;
-  -webkit-tap-highlight-color: transparent;
-}
-.card:hover { box-shadow: 0 6px 18px rgba(0,0,0,.1); transform: translateY(-2px); }
-.card:active { transform: none; }
-
-.card-img {
-  width: 100%;
-  height: 168px;
-  object-fit: cover;
-  display: block;
-  background: var(--bg);
-}
-.card-body {
-  padding: 12px 14px 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-  flex: 1;
-}
-.card-meta {
-  font-size: .67rem;
-  color: var(--muted);
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: .04em;
-}
-.card-title {
-  font-size: .88rem;
-  font-weight: 600;
-  line-height: 1.35;
-}
-.card-desc {
-  font-size: .78rem;
-  color: var(--muted);
-  line-height: 1.5;
-}
-.empty { color: var(--muted); font-size: .85rem; padding: 16px 0; }
-
-/* ── Footer ── */
-footer {
-  text-align: center;
-  padding: 20px 16px 40px;
-  font-size: .7rem;
-  color: var(--muted);
-  border-top: 1px solid var(--border);
-  background: var(--surface);
-}
+    /* FOOTER */
+    .page-footer {
+      text-align: center; padding: 24px 20px;
+      border-top: 1px solid var(--border);
+      font-size: 12px; color: var(--muted); background: #fff;
+    }
 </style>
 </head>
 <body>
 
-<header class="header">
-  <div class="header-inner">
-    <div>
-      <h1>📰 Daily Briefing</h1>
-      <p>Your world in 5 minutes</p>
-    </div>
-    <span class="date-badge">News: Mar 21 – Mar 28, 2026</span>
+<div class="header">
+  <div class="header-eyebrow">AI-Curated Daily Briefing</div>
+  <h1>Daily Briefing</h1>
+  <div class="header-sub">Saturday, March 28, 2026</div>
+  <div class="date-range-badge">📅 News from March 21 – March 28, 2026</div>
+  <div class="pills">
+    <span class="pill pill-world">🌍 World News</span>
+    <span class="pill pill-tech">💻 Tech</span>
+    <span class="pill pill-biz">📈 Business &amp; Economy</span>
+    <span class="pill pill-ghana">🇬🇭 Ghana</span>
+    <span class="pill pill-health">🏥 Ghana Health</span>
   </div>
-</header>
+</div>
 
-<main>
+<div class="container">
 
-  <section>
-    <h2 class="section-title">🌍 World News</h2>
-    <div class="card-grid">
-    <a class="card" href="https://www.bbc.com/news/articles/cr513g72vqgo?at_medium=RSS&at_campaign=rss" target="_blank" rel="noopener noreferrer">
+  <div class="section-header">
+    <div class="section-icon section-icon-world">🌍</div>
+    <div class="section-title-wrap"><h2>World News</h2></div>
+    <div class="section-line"></div>
+  </div>
+  <div class="cards-grid">
+    <div class="card lead-card">
       <img class="card-img" src="https://ichef.bbci.co.uk/ace/standard/240/cpsprodpb/6273/live/ed083780-2ab2-11f1-b297-95b0a0a8331e.jpg" alt="" loading="lazy" onerror="this.style.display='none'">
       <div class="card-body">
-        <span class="card-meta">BBC World · Mar 28</span>
-        <h3 class="card-title">Looksmaxxing influencer Clavicular arrested on battery charge in Florida</h3>
-        <p class="card-desc">Peters is accused of instigating a fight between two women and then posting a video of it online, authorities say.</p>
+        <div class="card-meta">
+          <span class="card-source source-world">BBC World</span>
+          <span class="card-date">Mar 28, 2026</span>
+        </div>
+        <h3>Looksmaxxing influencer Clavicular arrested on battery charge in Florida</h3>
+        <p>Peters is accused of instigating a fight between two women and then posting a video of it online, authorities say.</p>
+        <div class="card-footer">
+          <a class="read-link read-link-world" href="https://www.bbc.com/news/articles/cr513g72vqgo?at_medium=RSS&at_campaign=rss" target="_blank" rel="noopener noreferrer">Read on BBC World →</a>
+        </div>
       </div>
-    </a>
-
-    <a class="card" href="https://www.bbc.com/news/articles/clye4w10g22o?at_medium=RSS&at_campaign=rss" target="_blank" rel="noopener noreferrer">
+    </div>
+    <div class="card">
       <img class="card-img" src="https://ichef.bbci.co.uk/ace/standard/240/cpsprodpb/c9ad/live/243a9dd0-2980-11f1-b297-95b0a0a8331e.jpg" alt="" loading="lazy" onerror="this.style.display='none'">
       <div class="card-body">
-        <span class="card-meta">BBC World · Mar 28</span>
-        <h3 class="card-title">Two Cuba-bound aid ships found days after disappearing</h3>
-        <p class="card-desc">The crew are safe and will complete their mission, a spokesman for the organisers said.</p>
+        <div class="card-meta">
+          <span class="card-source source-world">BBC World</span>
+          <span class="card-date">Mar 28, 2026</span>
+        </div>
+        <h3>Two Cuba-bound aid ships found days after disappearing</h3>
+        <p>The crew are safe and will complete their mission, a spokesman for the organisers said.</p>
+        <div class="card-footer">
+          <a class="read-link read-link-world" href="https://www.bbc.com/news/articles/clye4w10g22o?at_medium=RSS&at_campaign=rss" target="_blank" rel="noopener noreferrer">Read on BBC World →</a>
+        </div>
       </div>
-    </a>
-
-    <a class="card" href="https://www.bbc.com/news/articles/cgj052l1j2no?at_medium=RSS&at_campaign=rss" target="_blank" rel="noopener noreferrer">
+    </div>
+    <div class="card">
       <img class="card-img" src="https://ichef.bbci.co.uk/ace/standard/240/cpsprodpb/0b9c/live/0c813930-2a7d-11f1-a79a-77e93010d956.jpg" alt="" loading="lazy" onerror="this.style.display='none'">
       <div class="card-body">
-        <span class="card-meta">BBC World · Mar 28</span>
-        <h3 class="card-title">House Republicans reject Senate deal, prolonging partial US government shutdown</h3>
-        <p class="card-desc">Airport security agents have not been paid in more than a month due to a congressional impasse, causing travel chaos across the US.</p>
+        <div class="card-meta">
+          <span class="card-source source-world">BBC World</span>
+          <span class="card-date">Mar 28, 2026</span>
+        </div>
+        <h3>House Republicans reject Senate deal, prolonging partial US government shutdown</h3>
+        <p>Airport security agents have not been paid in more than a month due to a congressional impasse, causing travel chaos across the US.</p>
+        <div class="card-footer">
+          <a class="read-link read-link-world" href="https://www.bbc.com/news/articles/cgj052l1j2no?at_medium=RSS&at_campaign=rss" target="_blank" rel="noopener noreferrer">Read on BBC World →</a>
+        </div>
       </div>
-    </a>
-
-    <a class="card" href="https://www.bbc.com/news/articles/cn89ry7y835o?at_medium=RSS&at_campaign=rss" target="_blank" rel="noopener noreferrer">
+    </div>
+    <div class="card">
       <img class="card-img" src="https://ichef.bbci.co.uk/ace/standard/240/cpsprodpb/79a9/live/b76c9130-2a4d-11f1-8322-4318ee346f27.jpg" alt="" loading="lazy" onerror="this.style.display='none'">
       <div class="card-body">
-        <span class="card-meta">BBC World · Mar 28</span>
-        <h3 class="card-title">Nepal's ex-PM arrested over fatal protest crackdown</h3>
-        <p class="card-desc">More than 70 people were killed during an uprising last year which ousted Oli's government.</p>
+        <div class="card-meta">
+          <span class="card-source source-world">BBC World</span>
+          <span class="card-date">Mar 28, 2026</span>
+        </div>
+        <h3>Nepal's ex-PM arrested over fatal protest crackdown</h3>
+        <p>More than 70 people were killed during an uprising last year which ousted Oli's government.</p>
+        <div class="card-footer">
+          <a class="read-link read-link-world" href="https://www.bbc.com/news/articles/cn89ry7y835o?at_medium=RSS&at_campaign=rss" target="_blank" rel="noopener noreferrer">Read on BBC World →</a>
+        </div>
       </div>
-    </a>
-
-    <a class="card" href="https://www.bbc.com/sport/golf/articles/cvg092kege7o?at_medium=RSS&at_campaign=rss" target="_blank" rel="noopener noreferrer">
+    </div>
+    <div class="card">
       <img class="card-img" src="https://ichef.bbci.co.uk/ace/standard/240/cpsprodpb/bc15/live/85e117b0-2ab3-11f1-934f-036468834728.jpg" alt="" loading="lazy" onerror="this.style.display='none'">
       <div class="card-body">
-        <span class="card-meta">BBC World · Mar 28</span>
-        <h3 class="card-title">Tiger Woods released on bail after DUI arrest</h3>
-        <p class="card-desc">Tiger Woods, the 15-time golf major champion, is released on bail following his arrest on charges of driving under the influence following a car crash in Florida.</p>
+        <div class="card-meta">
+          <span class="card-source source-world">BBC World</span>
+          <span class="card-date">Mar 28, 2026</span>
+        </div>
+        <h3>Tiger Woods released on bail after DUI arrest</h3>
+        <p>Tiger Woods, the 15-time golf major champion, is released on bail following his arrest on charges of driving under the influence following a car crash in Florida.</p>
+        <div class="card-footer">
+          <a class="read-link read-link-world" href="https://www.bbc.com/sport/golf/articles/cvg092kege7o?at_medium=RSS&at_campaign=rss" target="_blank" rel="noopener noreferrer">Read on BBC World →</a>
+        </div>
       </div>
-    </a>
-
-    <a class="card" href="https://www.bbc.com/news/articles/crr10v5p7lgo?at_medium=RSS&at_campaign=rss" target="_blank" rel="noopener noreferrer">
+    </div>
+    <div class="card">
       <img class="card-img" src="https://ichef.bbci.co.uk/ace/standard/240/cpsprodpb/0fbe/live/3fcf8ca0-29fc-11f1-99ef-b5dfea7d5974.jpg" alt="" loading="lazy" onerror="this.style.display='none'">
       <div class="card-body">
-        <span class="card-meta">BBC World · Mar 28</span>
-        <h3 class="card-title">Gaza peace doubts deepen as attention shifts to Iran</h3>
-        <p class="card-desc">With the world focused on the Iran war, there is increasing uncertainty about what happens next for Gaza.</p>
+        <div class="card-meta">
+          <span class="card-source source-world">BBC World</span>
+          <span class="card-date">Mar 28, 2026</span>
+        </div>
+        <h3>Gaza peace doubts deepen as attention shifts to Iran</h3>
+        <p>With the world focused on the Iran war, there is increasing uncertainty about what happens next for Gaza.</p>
+        <div class="card-footer">
+          <a class="read-link read-link-world" href="https://www.bbc.com/news/articles/crr10v5p7lgo?at_medium=RSS&at_campaign=rss" target="_blank" rel="noopener noreferrer">Read on BBC World →</a>
+        </div>
       </div>
-    </a>
     </div>
-  </section>
+  </div>
 
-  <section>
-    <h2 class="section-title">💻 Tech</h2>
-    <div class="card-grid">
-    <a class="card" href="https://computeradsfromthepast.substack.com/p/byte-interviews-chuck-peddle-father" target="_blank" rel="noopener noreferrer">
-      
+  <div class="section-header">
+    <div class="section-icon section-icon-tech">💻</div>
+    <div class="section-title-wrap"><h2>Tech</h2></div>
+    <div class="section-line"></div>
+  </div>
+  <div class="cards-grid">
+    <div class="card lead-card">
+      <div class="card-img-placeholder">💻</div>
       <div class="card-body">
-        <span class="card-meta">Hacker News · Mar 28</span>
-        <h3 class="card-title">Byte Interviews Chuck Peddle, Father of the MOS 6502 and Commodore PET (1982)</h3>
-        <p class="card-desc">Comments</p>
+        <div class="card-meta">
+          <span class="card-source source-tech">Hacker News</span>
+          <span class="card-date">Mar 28, 2026</span>
+        </div>
+        <h3>AI chatbots are "Yes-Men" that reinforce bad relationship decisions, study finds</h3>
+        <p>Comments</p>
+        <div class="card-footer">
+          <a class="read-link read-link-tech" href="https://news.stanford.edu/stories/2026/03/ai-advice-sycophantic-models-research" target="_blank" rel="noopener noreferrer">Read on Hacker News →</a>
+        </div>
       </div>
-    </a>
-
-    <a class="card" href="https://github.com/EnriqueLop/legalize-es" target="_blank" rel="noopener noreferrer">
-      
-      <div class="card-body">
-        <span class="card-meta">Hacker News · Mar 28</span>
-        <h3 class="card-title">I put all 8,642 Spanish laws in Git – every reform is a commit</h3>
-        <p class="card-desc">Comments</p>
-      </div>
-    </a>
-
-    <a class="card" href="https://www.ycombinator.com/companies/toma/jobs/2lrQI7S-sr-staff-software-engineer" target="_blank" rel="noopener noreferrer">
-      
-      <div class="card-body">
-        <span class="card-meta">Hacker News · Mar 28</span>
-        <h3 class="card-title">Toma (YC W24) is hiring a Senior/Staff Eng to build AI automotive coworkers</h3>
-        <p class="card-desc">Comments</p>
-      </div>
-    </a>
-
-    <a class="card" href="https://www.youtube.com/watch?v=lXxmIw9axWw" target="_blank" rel="noopener noreferrer">
-      
-      <div class="card-body">
-        <span class="card-meta">Hacker News · Mar 28</span>
-        <h3 class="card-title">I Built an Open-World Engine for the N64 [video]</h3>
-        <p class="card-desc">Comments</p>
-      </div>
-    </a>
-
-    <a class="card" href="https://arstechnica.com/space/2026/03/what-happens-next-with-nasas-plan-to-replace-the-iss-source-it-could-get-ugly/" target="_blank" rel="noopener noreferrer">
-      
-      <div class="card-body">
-        <span class="card-meta">Hacker News · Mar 28</span>
-        <h3 class="card-title">No one is happy with NASA's new idea for private space stations</h3>
-        <p class="card-desc">Comments</p>
-      </div>
-    </a>
-
-    <a class="card" href="https://grid.iamkate.com/" target="_blank" rel="noopener noreferrer">
-      
-      <div class="card-body">
-        <span class="card-meta">Hacker News · Mar 28</span>
-        <h3 class="card-title">Britain today generating 90%+ of electricity from renewables</h3>
-        <p class="card-desc">Comments</p>
-      </div>
-    </a>
     </div>
-  </section>
-
-  <section>
-    <h2 class="section-title">📈 Business & Economy</h2>
-    <div class="card-grid">
-    <a class="card" href="https://techcrunch.com/2026/03/28/anthropics-claude-popularity-with-paying-consumers-is-skyrocketing/" target="_blank" rel="noopener noreferrer">
-      
+    <div class="card">
+      <div class="card-img-placeholder">💻</div>
       <div class="card-body">
-        <span class="card-meta">TechCrunch · Mar 28</span>
-        <h3 class="card-title">Anthropic’s Claude popularity with paying consumers is skyrocketing</h3>
-        <p class="card-desc">Estimates for total Claude consumer users are all over the map (we've seen figures ranging from 18 million to 30 million). Anthropic hasn't disclosed this data, but a spokesperson did tell TechCrunch that Claude paid…</p>
+        <div class="card-meta">
+          <span class="card-source source-tech">Hacker News</span>
+          <span class="card-date">Mar 28, 2026</span>
+        </div>
+        <h3>Byte Interviews Chuck Peddle, Father of the MOS 6502 and Commodore PET (1982)</h3>
+        <p>Comments</p>
+        <div class="card-footer">
+          <a class="read-link read-link-tech" href="https://computeradsfromthepast.substack.com/p/byte-interviews-chuck-peddle-father" target="_blank" rel="noopener noreferrer">Read on Hacker News →</a>
+        </div>
       </div>
-    </a>
-
-    <a class="card" href="https://techcrunch.com/2026/03/28/what-will-power-the-grid-in-2035-the-race-is-wide-open/" target="_blank" rel="noopener noreferrer">
-      
+    </div>
+    <div class="card">
+      <div class="card-img-placeholder">💻</div>
       <div class="card-body">
-        <span class="card-meta">TechCrunch · Mar 28</span>
-        <h3 class="card-title">What will power the grid in 2035? The race is wide open</h3>
-        <p class="card-desc">Fusion, fission, and even natural gas are appeared tied in the race to deliver new power to the grid in the early 2030s.</p>
+        <div class="card-meta">
+          <span class="card-source source-tech">Hacker News</span>
+          <span class="card-date">Mar 28, 2026</span>
+        </div>
+        <h3>I put all 8,642 Spanish laws in Git – every reform is a commit</h3>
+        <p>Comments</p>
+        <div class="card-footer">
+          <a class="read-link read-link-tech" href="https://github.com/EnriqueLop/legalize-es" target="_blank" rel="noopener noreferrer">Read on Hacker News →</a>
+        </div>
       </div>
-    </a>
-
-    <a class="card" href="https://techcrunch.com/2026/03/28/lets-take-a-look-at-the-retro-tech-making-a-comeback/" target="_blank" rel="noopener noreferrer">
-      
+    </div>
+    <div class="card">
+      <div class="card-img-placeholder">💻</div>
       <div class="card-body">
-        <span class="card-meta">TechCrunch · Mar 28</span>
-        <h3 class="card-title">Let’s take a look at the retro tech making a comeback</h3>
-        <p class="card-desc">Boomboxes, instant cameras, and even landlines are making a comeback. Here are the coolest retro-inspired devices available.</p>
+        <div class="card-meta">
+          <span class="card-source source-tech">Hacker News</span>
+          <span class="card-date">Mar 28, 2026</span>
+        </div>
+        <h3>Toma (YC W24) is hiring a Senior/Staff Eng to build AI automotive coworkers</h3>
+        <p>Comments</p>
+        <div class="card-footer">
+          <a class="read-link read-link-tech" href="https://www.ycombinator.com/companies/toma/jobs/2lrQI7S-sr-staff-software-engineer" target="_blank" rel="noopener noreferrer">Read on Hacker News →</a>
+        </div>
       </div>
-    </a>
-
-    <a class="card" href="https://techcrunch.com/2026/03/28/from-moon-hotels-to-cattle-herding-8-startups-investors-chased-at-yc-demo-day/" target="_blank" rel="noopener noreferrer">
-      
+    </div>
+    <div class="card">
+      <div class="card-img-placeholder">💻</div>
       <div class="card-body">
-        <span class="card-meta">TechCrunch · Mar 28</span>
-        <h3 class="card-title">From Moon hotels to cattle herding: 8 startups investors chased at YC Demo Day</h3>
-        <p class="card-desc">We polled nearly a dozen VCs to find out which W26 startups are the sought after in the batch.</p>
+        <div class="card-meta">
+          <span class="card-source source-tech">Hacker News</span>
+          <span class="card-date">Mar 28, 2026</span>
+        </div>
+        <h3>I Built an Open-World Engine for the N64 [video]</h3>
+        <p>Comments</p>
+        <div class="card-footer">
+          <a class="read-link read-link-tech" href="https://www.youtube.com/watch?v=lXxmIw9axWw" target="_blank" rel="noopener noreferrer">Read on Hacker News →</a>
+        </div>
       </div>
-    </a>
+    </div>
+    <div class="card">
+      <div class="card-img-placeholder">💻</div>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="card-source source-tech">The Verge</span>
+          <span class="card-date">Mar 28, 2026</span>
+        </div>
+        <h3>Meta’s legal defeat could be a victory for children, or a loss for everyone</h3>
+        <p>Is social media not just bad, but illegally bad? Should tech companies pay for making it that way? According to two US juries - and no shortage of outside commentary - the answer to both questions is "yes." Earlier this…</p>
+        <div class="card-footer">
+          <a class="read-link read-link-tech" href="https://www.theverge.com/policy/903006/meta-new-mexico-los-angeles-child-safety-trial-impact" target="_blank" rel="noopener noreferrer">Read on The Verge →</a>
+        </div>
+      </div>
+    </div>
+  </div>
 
-    <a class="card" href="https://www.bbc.com/news/articles/cg4gdxp553wo?at_medium=RSS&at_campaign=rss" target="_blank" rel="noopener noreferrer">
+  <div class="section-header">
+    <div class="section-icon section-icon-biz">📈</div>
+    <div class="section-title-wrap"><h2>Business & Economy</h2></div>
+    <div class="section-line"></div>
+  </div>
+  <div class="cards-grid">
+    <div class="card lead-card">
+      <div class="card-img-placeholder">📈</div>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="card-source source-biz">TechCrunch</span>
+          <span class="card-date">Mar 28, 2026</span>
+        </div>
+        <h3>Anthropic’s Claude popularity with paying consumers is skyrocketing</h3>
+        <p>Estimates for total Claude consumer users are all over the map (we've seen figures ranging from 18 million to 30 million). Anthropic hasn't disclosed this data, but a spokesperson did tell TechCrunch that Claude paid…</p>
+        <div class="card-footer">
+          <a class="read-link read-link-biz" href="https://techcrunch.com/2026/03/28/anthropics-claude-popularity-with-paying-consumers-is-skyrocketing/" target="_blank" rel="noopener noreferrer">Read on TechCrunch →</a>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-img-placeholder">📈</div>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="card-source source-biz">TechCrunch</span>
+          <span class="card-date">Mar 28, 2026</span>
+        </div>
+        <h3>What will power the grid in 2035? The race is wide open</h3>
+        <p>Fusion, fission, and even natural gas are appeared tied in the race to deliver new power to the grid in the early 2030s.</p>
+        <div class="card-footer">
+          <a class="read-link read-link-biz" href="https://techcrunch.com/2026/03/28/what-will-power-the-grid-in-2035-the-race-is-wide-open/" target="_blank" rel="noopener noreferrer">Read on TechCrunch →</a>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-img-placeholder">📈</div>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="card-source source-biz">TechCrunch</span>
+          <span class="card-date">Mar 28, 2026</span>
+        </div>
+        <h3>Let’s take a look at the retro tech making a comeback</h3>
+        <p>Boomboxes, instant cameras, and even landlines are making a comeback. Here are the coolest retro-inspired devices available.</p>
+        <div class="card-footer">
+          <a class="read-link read-link-biz" href="https://techcrunch.com/2026/03/28/lets-take-a-look-at-the-retro-tech-making-a-comeback/" target="_blank" rel="noopener noreferrer">Read on TechCrunch →</a>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-img-placeholder">📈</div>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="card-source source-biz">TechCrunch</span>
+          <span class="card-date">Mar 28, 2026</span>
+        </div>
+        <h3>From Moon hotels to cattle herding: 8 startups investors chased at YC Demo Day</h3>
+        <p>We polled nearly a dozen VCs to find out which W26 startups are the sought after in the batch.</p>
+        <div class="card-footer">
+          <a class="read-link read-link-biz" href="https://techcrunch.com/2026/03/28/from-moon-hotels-to-cattle-herding-8-startups-investors-chased-at-yc-demo-day/" target="_blank" rel="noopener noreferrer">Read on TechCrunch →</a>
+        </div>
+      </div>
+    </div>
+    <div class="card">
       <img class="card-img" src="https://ichef.bbci.co.uk/ace/standard/240/cpsprodpb/5ac8/live/866c1250-2781-11f1-b6c4-11a8e903bb84.jpg" alt="" loading="lazy" onerror="this.style.display='none'">
       <div class="card-body">
-        <span class="card-meta">BBC Business · Mar 28</span>
-        <h3 class="card-title">City's electronic music venues struggling despite growth</h3>
-        <p class="card-desc">Social media posts claimed Newcastle's scene was thriving, but venues claim it is not the case.</p>
+        <div class="card-meta">
+          <span class="card-source source-biz">BBC Business</span>
+          <span class="card-date">Mar 28, 2026</span>
+        </div>
+        <h3>City's electronic music venues struggling despite growth</h3>
+        <p>Social media posts claimed Newcastle's scene was thriving, but venues claim it is not the case.</p>
+        <div class="card-footer">
+          <a class="read-link read-link-biz" href="https://www.bbc.com/news/articles/cg4gdxp553wo?at_medium=RSS&at_campaign=rss" target="_blank" rel="noopener noreferrer">Read on BBC Business →</a>
+        </div>
       </div>
-    </a>
-
-    <a class="card" href="https://www.bbc.com/news/articles/cdxd9ee1dwzo?at_medium=RSS&at_campaign=rss" target="_blank" rel="noopener noreferrer">
+    </div>
+    <div class="card">
       <img class="card-img" src="https://ichef.bbci.co.uk/ace/standard/240/cpsprodpb/b281/live/40f0fee0-290f-11f1-ac3b-771a0d255958.jpg" alt="" loading="lazy" onerror="this.style.display='none'">
       <div class="card-body">
-        <span class="card-meta">BBC Business · Mar 28</span>
-        <h3 class="card-title">Service charges coming under government scrutiny</h3>
-        <p class="card-desc">People across the West explain how the charges on their buildings are affecting their finances.</p>
+        <div class="card-meta">
+          <span class="card-source source-biz">BBC Business</span>
+          <span class="card-date">Mar 28, 2026</span>
+        </div>
+        <h3>Service charges coming under government scrutiny</h3>
+        <p>People across the West explain how the charges on their buildings are affecting their finances.</p>
+        <div class="card-footer">
+          <a class="read-link read-link-biz" href="https://www.bbc.com/news/articles/cdxd9ee1dwzo?at_medium=RSS&at_campaign=rss" target="_blank" rel="noopener noreferrer">Read on BBC Business →</a>
+        </div>
       </div>
-    </a>
     </div>
-  </section>
+  </div>
 
-  <section>
-    <h2 class="section-title">🇬🇭 Ghana</h2>
-    <div class="card-grid">
-    <a class="card" href="https://www.myjoyonline.com/rainstorm-rips-off-kassena-nankana-west-district-block/" target="_blank" rel="noopener noreferrer">
+  <div class="section-header">
+    <div class="section-icon section-icon-ghana">🇬🇭</div>
+    <div class="section-title-wrap"><h2>Ghana</h2></div>
+    <div class="section-line"></div>
+  </div>
+  <div class="cards-grid">
+    <div class="card lead-card">
+      <img class="card-img" src="https://www.myjoyonline.com/wp-content/uploads/2026/03/image-2653-1024x768.png" alt="" loading="lazy" onerror="this.style.display='none'">
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="card-source source-ghana">JoyOnline</span>
+          <span class="card-date">Mar 28, 2026</span>
+        </div>
+        <h3>Pamela Bridgewater Project urges stakeholders to join outreach programme on teenage pregnancy</h3>
+        <p>The founder of Kunata Voluntary Organisation, Yahaya Alhassan, the NGO that operates the Ambassador Pamela Bridgewater Project, has appealed to stakeholders to channel their advocacy efforts towards outreach programmes…</p>
+        <div class="card-footer">
+          <a class="read-link read-link-ghana" href="https://www.myjoyonline.com/pamela-bridgewater-project-urges-stakeholders-to-join-outreach-programme-on-teenage-pregnancy/" target="_blank" rel="noopener noreferrer">Read on JoyOnline →</a>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <img class="card-img" src="https://www.myjoyonline.com/wp-content/uploads/2026/03/pius-860x312-1.jpg" alt="" loading="lazy" onerror="this.style.display='none'">
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="card-source source-ghana">JoyOnline</span>
+          <span class="card-date">Mar 28, 2026</span>
+        </div>
+        <h3>Shot on duty: A Ghanaian journalist’s five-year struggle for recovery</h3>
+        <p>“My daily routine now is waiting for medical appointments. I have undergone five surgeries, and I am still not okay,” Pius Asiedu recounts his ordeal, almost whispering to himself, his voice heavy with tiredness, as he…</p>
+        <div class="card-footer">
+          <a class="read-link read-link-ghana" href="https://www.myjoyonline.com/shot-on-duty-a-ghanaian-journalists-five-year-struggle-for-recovery/" target="_blank" rel="noopener noreferrer">Read on JoyOnline →</a>
+        </div>
+      </div>
+    </div>
+    <div class="card">
       <img class="card-img" src="https://www.myjoyonline.com/wp-content/uploads/2026/03/image-2648-1024x576.png" alt="" loading="lazy" onerror="this.style.display='none'">
       <div class="card-body">
-        <span class="card-meta">JoyOnline · Mar 28</span>
-        <h3 class="card-title">Rainstorm rips off Kassena-Nankana West District block</h3>
-        <p class="card-desc">The District Chief Executive (DCE) for Kassena-Nankana West, Stephen Aeke Akurugo, has appealed to the central government for urgent assistance following a severe rainstorm that caused significant damage to the district…</p>
+        <div class="card-meta">
+          <span class="card-source source-ghana">JoyOnline</span>
+          <span class="card-date">Mar 28, 2026</span>
+        </div>
+        <h3>Rainstorm rips off Kassena-Nankana West District block</h3>
+        <p>The District Chief Executive (DCE) for Kassena-Nankana West, Stephen Aeke Akurugo, has appealed to the central government for urgent assistance following a severe rainstorm that caused significant damage to the district…</p>
+        <div class="card-footer">
+          <a class="read-link read-link-ghana" href="https://www.myjoyonline.com/rainstorm-rips-off-kassena-nankana-west-district-block/" target="_blank" rel="noopener noreferrer">Read on JoyOnline →</a>
+        </div>
       </div>
-    </a>
-
-    <a class="card" href="https://www.myjoyonline.com/fans-gather-in-their-numbers-for-2026-adom-tv-fufuo-party/" target="_blank" rel="noopener noreferrer">
+    </div>
+    <div class="card">
       <img class="card-img" src="https://www.myjoyonline.com/wp-content/uploads/2026/03/IMG_3380-1024x683.jpg" alt="" loading="lazy" onerror="this.style.display='none'">
       <div class="card-body">
-        <span class="card-meta">JoyOnline · Mar 28</span>
-        <h3 class="card-title">Fans gather in their numbers for 2026 Adom TV Fufuo Party</h3>
-        <p class="card-desc">The forecourt of The Multimedia Group Limited at Kokomlemle came alive with colour and energy as hundreds gathered for the much-anticipated 2026 Adom TV Fufuo Party.</p>
+        <div class="card-meta">
+          <span class="card-source source-ghana">JoyOnline</span>
+          <span class="card-date">Mar 28, 2026</span>
+        </div>
+        <h3>Fans gather in their numbers for 2026 Adom TV Fufuo Party</h3>
+        <p>The forecourt of The Multimedia Group Limited at Kokomlemle came alive with colour and energy as hundreds gathered for the much-anticipated 2026 Adom TV Fufuo Party.</p>
+        <div class="card-footer">
+          <a class="read-link read-link-ghana" href="https://www.myjoyonline.com/fans-gather-in-their-numbers-for-2026-adom-tv-fufuo-party/" target="_blank" rel="noopener noreferrer">Read on JoyOnline →</a>
+        </div>
       </div>
-    </a>
-
-    <a class="card" href="https://www.myjoyonline.com/when-reporting-becomes-a-risk-the-growing-digital-war-on-journalists-in-ghana/" target="_blank" rel="noopener noreferrer">
+    </div>
+    <div class="card">
       <img class="card-img" src="https://www.myjoyonline.com/wp-content/uploads/2026/03/ChatGPT-Image-Mar-27-2026-07_20_02-AM-860x573-1.png" alt="" loading="lazy" onerror="this.style.display='none'">
       <div class="card-body">
-        <span class="card-meta">JoyOnline · Mar 28</span>
-        <h3 class="card-title">When reporting becomes a risk: The growing digital war on journalists in Ghana</h3>
-        <p class="card-desc">Reporters who investigate politics, corruption, conflict and human rights are facing a growing wave of cyber-enabled attacks, ranging from coordinated online harassment and disinformation campaigns to hacked messaging…</p>
+        <div class="card-meta">
+          <span class="card-source source-ghana">JoyOnline</span>
+          <span class="card-date">Mar 28, 2026</span>
+        </div>
+        <h3>When reporting becomes a risk: The growing digital war on journalists in Ghana</h3>
+        <p>Reporters who investigate politics, corruption, conflict and human rights are facing a growing wave of cyber-enabled attacks, ranging from coordinated online harassment and disinformation campaigns to hacked messaging…</p>
+        <div class="card-footer">
+          <a class="read-link read-link-ghana" href="https://www.myjoyonline.com/when-reporting-becomes-a-risk-the-growing-digital-war-on-journalists-in-ghana/" target="_blank" rel="noopener noreferrer">Read on JoyOnline →</a>
+        </div>
       </div>
-    </a>
-
-    <a class="card" href="https://www.myjoyonline.com/pressure-mounts-on-bogoso-prestea-mine-divisional-chiefs-to-withdraw-petition-seeking-to-replace-heath-goldfields/" target="_blank" rel="noopener noreferrer">
+    </div>
+    <div class="card">
       <img class="card-img" src="https://www.myjoyonline.com/wp-content/uploads/2026/03/WhatsApp-Image-2026-03-27-at-12.33.53-1.jpeg" alt="" loading="lazy" onerror="this.style.display='none'">
       <div class="card-body">
-        <span class="card-meta">JoyOnline · Mar 28</span>
-        <h3 class="card-title">Pressure mounts on Bogoso-Prestea Mine Divisional Chiefs to withdraw petition seeking to replace Heath Goldfields</h3>
-        <p class="card-desc">Just six days ago, the Divisional Chiefs of Bogoso-Prestea sent a petition to President John Dramani Mahama calling for the government to intervene and place the Bogoso-Prestea Mine under "a financially capable…</p>
+        <div class="card-meta">
+          <span class="card-source source-ghana">JoyOnline</span>
+          <span class="card-date">Mar 28, 2026</span>
+        </div>
+        <h3>Pressure mounts on Bogoso-Prestea Mine Divisional Chiefs to withdraw petition seeking to replace Heath Goldfields</h3>
+        <p>Just six days ago, the Divisional Chiefs of Bogoso-Prestea sent a petition to President John Dramani Mahama calling for the government to intervene and place the Bogoso-Prestea Mine under "a financially capable…</p>
+        <div class="card-footer">
+          <a class="read-link read-link-ghana" href="https://www.myjoyonline.com/pressure-mounts-on-bogoso-prestea-mine-divisional-chiefs-to-withdraw-petition-seeking-to-replace-heath-goldfields/" target="_blank" rel="noopener noreferrer">Read on JoyOnline →</a>
+        </div>
       </div>
-    </a>
-
-    <a class="card" href="https://www.myjoyonline.com/nacoc-bono-east-command-arrests-6-in-operation-clean-street-in-donkor-nkwanta/" target="_blank" rel="noopener noreferrer">
-      <img class="card-img" src="https://www.myjoyonline.com/wp-content/uploads/2026/03/image-2644-1024x768.png" alt="" loading="lazy" onerror="this.style.display='none'">
-      <div class="card-body">
-        <span class="card-meta">JoyOnline · Mar 28</span>
-        <h3 class="card-title">NACOC Bono-East Command arrests 6 in ‘Operation Clean Street’ in Donkor-Nkwanta</h3>
-        <p class="card-desc">The Bono-East Regional Command of the Narcotics Control Commission (NACOC) has conducted a targeted anti-drug operation, dubbed “Operation Clean Street”, in Donkor-Nkwanta in the Nkoranza South District.</p>
-      </div>
-    </a>
-
-    <a class="card" href="https://www.myjoyonline.com/no-bed-syndrome-is-result-of-systemic-failures-not-lack-of-beds-aurum-institute-ghana-director/" target="_blank" rel="noopener noreferrer">
-      <img class="card-img" src="https://www.myjoyonline.com/wp-content/uploads/2026/03/image-2643-1024x443.png" alt="" loading="lazy" onerror="this.style.display='none'">
-      <div class="card-body">
-        <span class="card-meta">JoyOnline · Mar 28</span>
-        <h3 class="card-title">No bed syndrome is result of systemic failures, not lack of beds – Aurum Institute Ghana Director</h3>
-        <p class="card-desc">Country Director of Aurum Institute Ghana, Nana Kofi Quakyi, has said Ghana’s “no bed syndrome” reflects deep weaknesses in the health system, warning that the issue is often wrongly reduced to the availability of beds…</p>
-      </div>
-    </a>
     </div>
-  </section>
-<section><h2 class="section-title">🏥 Ghana Health</h2><p class="empty">No recent stories found.</p></section>
-</main>
+  </div>
 
-<footer>
-  Generated Saturday 28 March 2026 · 14:41 UTC · BBC · The Verge · Hacker News · TechCrunch · JoyOnline
-</footer>
+  <div class="section-header">
+    <div class="section-icon section-icon-health">🏥</div>
+    <div class="section-title-wrap"><h2>Ghana Health</h2></div>
+    <div class="section-line"></div>
+  </div>
+  <p style="color:var(--muted);font-size:14px;padding:16px 0">No recent stories found.</p>
+</div>
+
+<div class="page-footer">
+  Generated 28 Mar 2026 · 14:50 UTC · BBC · The Verge · Hacker News · TechCrunch · JoyOnline
+</div>
 
 </body>
 </html>

@@ -40,23 +40,22 @@ FEEDS = {
 }
 
 SECTION_META = {
-    "world":        {"icon": "🌍", "title": "World News"},
-    "tech":         {"icon": "💻", "title": "Tech"},
-    "business":     {"icon": "📈", "title": "Business & Economy"},
-    "ghana":        {"icon": "🇬🇭", "title": "Ghana"},
-    "ghana_health": {"icon": "🏥", "title": "Ghana Health"},
+    "world":        {"icon": "🌍", "title": "World News",         "slug": "world"},
+    "tech":         {"icon": "💻", "title": "Tech",               "slug": "tech"},
+    "business":     {"icon": "📈", "title": "Business & Economy", "slug": "biz"},
+    "ghana":        {"icon": "🇬🇭", "title": "Ghana",            "slug": "ghana"},
+    "ghana_health": {"icon": "🏥", "title": "Ghana Health",       "slug": "health"},
 }
 
-# Keywords that mark a Ghana story as political (lower-priority)
 GHANA_POLITICS_WORDS = [
     "ndc", "npp", "sole-sourc", "sole source", "big push",
     " mp ", " mps ", "parliament", "constituency",
     "akufo-addo", "bawumia", "mahama",
 ]
 
-MEDIA_NS = "http://search.yahoo.com/mrss/"
+MEDIA_NS   = "http://search.yahoo.com/mrss/"
 CONTENT_NS = "http://purl.org/rss/1.0/modules/content/"
-ATOM_NS = "http://www.w3.org/2005/Atom"
+ATOM_NS    = "http://www.w3.org/2005/Atom"
 
 
 # ── Helpers ───────────────────────────────────────────────────────────────────
@@ -114,18 +113,12 @@ def parse_feed(xml_text: str, source: str, cutoff: datetime) -> list[dict]:
         else root.findall(".//item")
     )
 
-    def get(el, *tags):
-        for tag in tags:
-            child = el.find(tag)
-            if child is not None and child.text:
-                return child.text.strip()
-        return ""
-
     items = []
     for e in entries:
         # Title
         title = strip_tags(
-            get(e, f"{{{ATOM_NS}}}title") if is_atom else get(e, "title")
+            (e.findtext(f"{{{ATOM_NS}}}title") or "") if is_atom
+            else (e.findtext("title") or "")
         )
         if not title:
             continue
@@ -135,7 +128,7 @@ def parse_feed(xml_text: str, source: str, cutoff: datetime) -> list[dict]:
             link_el = e.find(f"{{{ATOM_NS}}}link")
             link = link_el.get("href", "") if link_el is not None else ""
         else:
-            link = get(e, "link")
+            link = (e.findtext("link") or "").strip()
 
         # Date
         date_obj = None
@@ -147,7 +140,7 @@ def parse_feed(xml_text: str, source: str, cutoff: datetime) -> list[dict]:
                     if date_obj:
                         break
         else:
-            date_obj = parse_date(get(e, "pubDate"))
+            date_obj = parse_date(e.findtext("pubDate") or "")
 
         if date_obj and date_obj < cutoff:
             continue
@@ -161,9 +154,9 @@ def parse_feed(xml_text: str, source: str, cutoff: datetime) -> list[dict]:
                     desc = truncate(strip_tags(el.text))
                     break
         else:
-            raw_desc = get(e, "description")
-            if raw_desc:
-                desc = truncate(strip_tags(raw_desc))
+            raw = e.findtext("description") or ""
+            if raw:
+                desc = truncate(strip_tags(raw))
             if not desc:
                 el = e.find(f"{{{CONTENT_NS}}}encoded")
                 if el is not None and el.text:
@@ -171,10 +164,7 @@ def parse_feed(xml_text: str, source: str, cutoff: datetime) -> list[dict]:
 
         # Image
         img = ""
-        for ns_tag in [
-            f"{{{MEDIA_NS}}}content",
-            f"{{{MEDIA_NS}}}thumbnail",
-        ]:
+        for ns_tag in [f"{{{MEDIA_NS}}}content", f"{{{MEDIA_NS}}}thumbnail"]:
             el = e.find(ns_tag)
             if el is not None:
                 img = el.get("url", "")
@@ -185,34 +175,24 @@ def parse_feed(xml_text: str, source: str, cutoff: datetime) -> list[dict]:
             if enc is not None:
                 img = enc.get("url", "")
         if not img:
-            for raw_tag in [
-                f"{{{CONTENT_NS}}}encoded",
-                "description",
-            ]:
+            for raw_tag in [f"{{{CONTENT_NS}}}encoded", "description"]:
                 el = e.find(raw_tag)
                 if el is not None and el.text:
                     img = first_img(el.text)
                     if img:
                         break
 
-        # Categories
-        cats = [
-            (c.text or c.get("term", "")).strip()
-            for c in e.findall("category")
-            if c.text or c.get("term")
-        ]
-
-        items.append(
-            dict(title=title, link=link, desc=desc,
-                 source=source, date=date_obj, img=img, cats=cats)
-        )
+        items.append(dict(
+            title=title, link=link, desc=desc,
+            source=source, date=date_obj, img=img,
+        ))
 
     return items
 
 
 # ── Section builder ───────────────────────────────────────────────────────────
 def is_ghana_political(item: dict) -> bool:
-    blob = (item["title"] + " " + " ".join(item["cats"])).lower()
+    blob = item["title"].lower()
     return any(kw in blob for kw in GHANA_POLITICS_WORDS)
 
 
@@ -229,12 +209,11 @@ def build_section(keys: list[str], cutoff: datetime,
     if exclude_fn:
         raw = [i for i in raw if not exclude_fn(i)]
 
-    # Deduplicate by normalised title prefix
     seen, unique = set(), []
     for item in raw:
-        key = item["title"].lower()[:60]
-        if key not in seen:
-            seen.add(key)
+        k = item["title"].lower()[:60]
+        if k not in seen:
+            seen.add(k)
             unique.append(item)
 
     unique.sort(
@@ -244,212 +223,250 @@ def build_section(keys: list[str], cutoff: datetime,
     return unique[:max_n]
 
 
-# ── HTML ──────────────────────────────────────────────────────────────────────
+# ── HTML helpers ──────────────────────────────────────────────────────────────
 def fmt_date(dt: datetime | None) -> str:
-    return dt.strftime("%b %d") if dt else ""
+    return dt.strftime("%b %d, %Y") if dt else ""
 
 
-def card(item: dict) -> str:
-    img_block = (
-        f'<img class="card-img" src="{item["img"]}" alt="" loading="lazy" '
-        f'onerror="this.style.display=\'none\'">'
-        if item["img"] else ""
-    )
-    desc_block = f'<p class="card-desc">{item["desc"]}</p>' if item["desc"] else ""
-    meta = item["source"] + (f" · {fmt_date(item['date'])}" if item["date"] else "")
-    return f"""
-    <a class="card" href="{item['link']}" target="_blank" rel="noopener noreferrer">
+def card_html(item: dict, slug: str, section_icon: str, is_lead: bool = False) -> str:
+    if item["img"]:
+        img_block = (
+            f'<img class="card-img" src="{item["img"]}" alt="" loading="lazy" '
+            f'onerror="this.style.display=\'none\'">'
+        )
+    else:
+        img_block = f'<div class="card-img-placeholder">{section_icon}</div>'
+
+    desc_block = f"<p>{item['desc']}</p>" if item["desc"] else ""
+    date_str   = fmt_date(item["date"])
+
+    return f"""    <div class="card{' lead-card' if is_lead else ''}">
       {img_block}
       <div class="card-body">
-        <span class="card-meta">{meta}</span>
-        <h3 class="card-title">{item['title']}</h3>
+        <div class="card-meta">
+          <span class="card-source source-{slug}">{item['source']}</span>
+          <span class="card-date">{date_str}</span>
+        </div>
+        <h3>{item['title']}</h3>
         {desc_block}
+        <div class="card-footer">
+          <a class="read-link read-link-{slug}" href="{item['link']}" target="_blank" rel="noopener noreferrer">Read on {item['source']} →</a>
+        </div>
       </div>
-    </a>"""
+    </div>"""
 
 
-def section(icon: str, title: str, items: list[dict]) -> str:
+def section_html(key: str, items: list[dict]) -> str:
+    meta = SECTION_META[key]
+    icon, title, slug = meta["icon"], meta["title"], meta["slug"]
+
     if not items:
-        return (
-            f'<section><h2 class="section-title">{icon} {title}</h2>'
-            f'<p class="empty">No recent stories found.</p></section>'
-        )
-    grid = "\n".join(card(i) for i in items)
+        return f"""
+  <div class="section-header">
+    <div class="section-icon section-icon-{slug}">{icon}</div>
+    <div class="section-title-wrap"><h2>{title}</h2></div>
+    <div class="section-line"></div>
+  </div>
+  <p style="color:var(--muted);font-size:14px;padding:16px 0">No recent stories found.</p>"""
+
+    cards = "\n".join(
+        card_html(item, slug, icon, is_lead=(i == 0))
+        for i, item in enumerate(items)
+    )
     return f"""
-  <section>
-    <h2 class="section-title">{icon} {title}</h2>
-    <div class="card-grid">{grid}
-    </div>
-  </section>"""
+  <div class="section-header">
+    <div class="section-icon section-icon-{slug}">{icon}</div>
+    <div class="section-title-wrap"><h2>{title}</h2></div>
+    <div class="section-line"></div>
+  </div>
+  <div class="cards-grid">
+{cards}
+  </div>"""
 
 
+# ── CSS ───────────────────────────────────────────────────────────────────────
 CSS = """
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #f8f9fb;
+      --surface: #ffffff;
+      --surface2: #f1f3f7;
+      --border: #e2e6ef;
+      --accent-world:  #2563eb;
+      --accent-tech:   #7c3aed;
+      --accent-biz:    #059669;
+      --accent-ghana:  #d97706;
+      --accent-health: #0891b2;
+      --text: #0f172a;
+      --muted: #64748b;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
 
-:root {
-  --bg:       #f4f4ef;
-  --surface:  #ffffff;
-  --border:   #e5e5dd;
-  --text:     #1a1a1a;
-  --muted:    #6b7280;
-  --accent:   #1d4ed8;
-  --accent-bg:#eff6ff;
-  --radius:   12px;
-  --shadow:   0 1px 3px rgba(0,0,0,.07), 0 1px 2px rgba(0,0,0,.05);
-}
+    /* HEADER */
+    .header {
+      background: #ffffff;
+      border-bottom: 1px solid var(--border);
+      padding: 40px 24px 32px;
+      text-align: center;
+    }
+    .header-eyebrow {
+      font-size: 11px; font-weight: 700;
+      letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--muted); margin-bottom: 10px;
+    }
+    .header h1 {
+      font-size: clamp(26px, 6vw, 42px);
+      font-weight: 800; letter-spacing: -1.5px;
+      color: var(--text); margin-bottom: 6px;
+    }
+    .header-sub { font-size: 14px; color: var(--muted); }
+    .date-range-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: #f0fdf4; border: 1px solid #bbf7d0; color: #15803d;
+      border-radius: 999px; padding: 4px 14px;
+      font-size: 12px; font-weight: 600; margin-top: 14px;
+    }
+    .pills {
+      display: flex; gap: 8px; justify-content: center;
+      flex-wrap: wrap; margin-top: 16px;
+    }
+    .pill {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 4px 12px; border-radius: 999px;
+      font-size: 12px; font-weight: 600; border: 1.5px solid;
+    }
+    .pill-world  { color: var(--accent-world);  border-color: #bfdbfe; background: #eff6ff; }
+    .pill-tech   { color: var(--accent-tech);   border-color: #ddd6fe; background: #f5f3ff; }
+    .pill-biz    { color: var(--accent-biz);    border-color: #a7f3d0; background: #f0fdf4; }
+    .pill-ghana  { color: var(--accent-ghana);  border-color: #fde68a; background: #fffbeb; }
+    .pill-health { color: var(--accent-health); border-color: #a5f3fc; background: #ecfeff; }
 
-body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  line-height: 1.5;
-  -webkit-font-smoothing: antialiased;
-}
+    /* LAYOUT */
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 20px 80px; }
 
-/* ── Header ── */
-.header {
-  background: var(--surface);
-  border-bottom: 1px solid var(--border);
-  padding: 16px;
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  backdrop-filter: blur(8px);
-}
-.header-inner {
-  max-width: 960px;
-  margin: 0 auto;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-.header h1 {
-  font-size: 1.15rem;
-  font-weight: 800;
-  letter-spacing: -.03em;
-}
-.header p {
-  font-size: .75rem;
-  color: var(--muted);
-  margin-top: 1px;
-}
-.date-badge {
-  background: var(--accent-bg);
-  color: var(--accent);
-  font-size: .7rem;
-  font-weight: 700;
-  padding: 4px 10px;
-  border-radius: 99px;
-  white-space: nowrap;
-  flex-shrink: 0;
-}
+    /* SECTION HEADER */
+    .section-header {
+      display: flex; align-items: center; gap: 14px;
+      padding: 48px 0 20px;
+    }
+    .section-icon {
+      width: 40px; height: 40px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px; flex-shrink: 0;
+    }
+    .section-icon-world  { background: #eff6ff; }
+    .section-icon-tech   { background: #f5f3ff; }
+    .section-icon-biz    { background: #f0fdf4; }
+    .section-icon-ghana  { background: #fffbeb; }
+    .section-icon-health { background: #ecfeff; }
+    .section-title-wrap h2 {
+      font-size: 20px; font-weight: 700; letter-spacing: -0.3px;
+    }
+    .section-line { flex: 1; height: 1px; background: var(--border); }
 
-/* ── Layout ── */
-main {
-  max-width: 960px;
-  margin: 0 auto;
-  padding: 24px 16px 64px;
-  display: flex;
-  flex-direction: column;
-  gap: 36px;
-}
+    /* CARD GRID */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 16px;
+    }
+    @media (max-width: 640px) { .cards-grid { grid-template-columns: 1fr; } }
 
-/* ── Section ── */
-.section-title {
-  font-size: .95rem;
-  font-weight: 700;
-  letter-spacing: -.01em;
-  margin-bottom: 14px;
-  padding-bottom: 10px;
-  border-bottom: 2px solid var(--border);
-}
+    /* CARD */
+    .card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 14px; overflow: hidden;
+      display: flex; flex-direction: column;
+      transition: box-shadow .15s, transform .15s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,.08); }
+    .card:active { transform: none; }
+    .card-img {
+      width: 100%; height: 190px; object-fit: cover;
+      background: var(--surface2); display: block;
+    }
+    .card-img-placeholder {
+      width: 100%; height: 140px; background: var(--surface2);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 40px;
+    }
+    .card-body {
+      padding: 16px 18px 18px; flex: 1;
+      display: flex; flex-direction: column;
+    }
+    .card-meta {
+      display: flex; align-items: center;
+      justify-content: space-between; margin-bottom: 8px;
+    }
+    .card-source {
+      font-size: 10px; font-weight: 700;
+      letter-spacing: .1em; text-transform: uppercase;
+      padding: 2px 8px; border-radius: 4px;
+    }
+    .source-world  { color: var(--accent-world);  background: #eff6ff; }
+    .source-tech   { color: var(--accent-tech);   background: #f5f3ff; }
+    .source-biz    { color: var(--accent-biz);    background: #f0fdf4; }
+    .source-ghana  { color: var(--accent-ghana);  background: #fffbeb; }
+    .source-health { color: var(--accent-health); background: #ecfeff; }
+    .card-date { font-size: 11px; color: var(--muted); }
+    .card h3 {
+      font-size: 15px; font-weight: 700; line-height: 1.4;
+      letter-spacing: -0.2px; margin-bottom: 8px;
+    }
+    .card p { font-size: 13px; color: var(--muted); line-height: 1.65; flex: 1; }
+    .card-footer {
+      margin-top: 14px; padding-top: 10px;
+      border-top: 1px solid var(--border);
+    }
+    .read-link {
+      font-size: 12px; font-weight: 600; text-decoration: none;
+      display: inline-flex; align-items: center; gap: 4px;
+    }
+    .read-link-world  { color: var(--accent-world); }
+    .read-link-tech   { color: var(--accent-tech); }
+    .read-link-biz    { color: var(--accent-biz); }
+    .read-link-ghana  { color: var(--accent-ghana); }
+    .read-link-health { color: var(--accent-health); }
+    .read-link:hover { text-decoration: underline; }
 
-/* ── Grid ── */
-.card-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 12px;
-}
-@media (min-width: 560px) {
-  .card-grid { grid-template-columns: repeat(2, 1fr); }
-}
-@media (min-width: 840px) {
-  .card-grid { grid-template-columns: repeat(3, 1fr); }
-}
+    /* LEAD CARD */
+    .lead-card {
+      grid-column: 1 / -1;
+      display: grid; grid-template-columns: 1.1fr 1fr;
+    }
+    .lead-card .card-img { height: 100%; min-height: 240px; border-radius: 0; }
+    .lead-card .card-body { padding: 24px 28px; justify-content: center; }
+    .lead-card h3 { font-size: 20px; }
+    .lead-card p  { font-size: 14px; }
+    @media (max-width: 640px) {
+      .lead-card { grid-template-columns: 1fr; }
+      .lead-card .card-img { height: 200px; }
+    }
 
-/* ── Card ── */
-.card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  overflow: hidden;
-  box-shadow: var(--shadow);
-  text-decoration: none;
-  color: inherit;
-  display: flex;
-  flex-direction: column;
-  transition: box-shadow .15s, transform .15s;
-  -webkit-tap-highlight-color: transparent;
-}
-.card:hover { box-shadow: 0 6px 18px rgba(0,0,0,.1); transform: translateY(-2px); }
-.card:active { transform: none; }
-
-.card-img {
-  width: 100%;
-  height: 168px;
-  object-fit: cover;
-  display: block;
-  background: var(--bg);
-}
-.card-body {
-  padding: 12px 14px 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-  flex: 1;
-}
-.card-meta {
-  font-size: .67rem;
-  color: var(--muted);
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: .04em;
-}
-.card-title {
-  font-size: .88rem;
-  font-weight: 600;
-  line-height: 1.35;
-}
-.card-desc {
-  font-size: .78rem;
-  color: var(--muted);
-  line-height: 1.5;
-}
-.empty { color: var(--muted); font-size: .85rem; padding: 16px 0; }
-
-/* ── Footer ── */
-footer {
-  text-align: center;
-  padding: 20px 16px 40px;
-  font-size: .7rem;
-  color: var(--muted);
-  border-top: 1px solid var(--border);
-  background: var(--surface);
-}
+    /* FOOTER */
+    .page-footer {
+      text-align: center; padding: 24px 20px;
+      border-top: 1px solid var(--border);
+      font-size: 12px; color: var(--muted); background: #fff;
+    }
 """
 
 
+# ── Full page ─────────────────────────────────────────────────────────────────
 def build_html(sections_data: dict, from_dt: datetime, to_dt: datetime) -> str:
-    from_str = from_dt.strftime("%b %d")
-    to_str   = to_dt.strftime("%b %d, %Y")
-    gen_str  = to_dt.strftime("%A %d %B %Y · %H:%M UTC")
+    from_str = from_dt.strftime("%B %d")
+    to_str   = to_dt.strftime("%B %d, %Y")
+    day_str  = to_dt.strftime("%A, %B %d, %Y")
+    gen_str  = to_dt.strftime("%d %b %Y · %H:%M UTC")
 
-    sections_html = "\n".join(
-        section(SECTION_META[k]["icon"], SECTION_META[k]["title"], sections_data[k])
-        for k in SECTION_META
-    )
+    all_sections = "\n".join(section_html(k, sections_data[k]) for k in SECTION_META)
     sources = "BBC · The Verge · Hacker News · TechCrunch · JoyOnline"
 
     return f"""<!DOCTYPE html>
@@ -458,28 +475,32 @@ def build_html(sections_data: dict, from_dt: datetime, to_dt: datetime) -> str:
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#ffffff">
-  <title>Daily Briefing · {to_str}</title>
+  <title>Daily Briefing — {to_str}</title>
   <style>{CSS}</style>
 </head>
 <body>
 
-<header class="header">
-  <div class="header-inner">
-    <div>
-      <h1>📰 Daily Briefing</h1>
-      <p>Your world in 5 minutes</p>
-    </div>
-    <span class="date-badge">News: {from_str} – {to_str}</span>
+<div class="header">
+  <div class="header-eyebrow">AI-Curated Daily Briefing</div>
+  <h1>Daily Briefing</h1>
+  <div class="header-sub">{day_str}</div>
+  <div class="date-range-badge">📅 News from {from_str} – {to_str}</div>
+  <div class="pills">
+    <span class="pill pill-world">🌍 World News</span>
+    <span class="pill pill-tech">💻 Tech</span>
+    <span class="pill pill-biz">📈 Business &amp; Economy</span>
+    <span class="pill pill-ghana">🇬🇭 Ghana</span>
+    <span class="pill pill-health">🏥 Ghana Health</span>
   </div>
-</header>
+</div>
 
-<main>
-{sections_html}
-</main>
+<div class="container">
+{all_sections}
+</div>
 
-<footer>
+<div class="page-footer">
   Generated {gen_str} · {sources}
-</footer>
+</div>
 
 </body>
 </html>"""
