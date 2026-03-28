@@ -1,0 +1,33 @@
+name: Daily Briefing
+
+on:
+  schedule:
+    - cron: '0 6 * * *'   # 06:00 UTC = 06:00 Ghana (UTC+0)
+  workflow_dispatch:        # allow manual trigger from GitHub UI
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Generate briefing
+        run: python generate.py
+
+      - name: Commit & push index.html
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          git diff --staged --quiet || (
+            git commit -m "briefing: $(date -u +'%Y-%m-%d')" &&
+            git push
+          )
